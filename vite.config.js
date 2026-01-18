@@ -1,22 +1,31 @@
-// vite.config.js
-import { defineConfig } from 'vite'
+﻿import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [vue()],
-  base: '/',  // Netlify 不需要子路径
+  base: './',
+  server: {
+    port: 3000,
+    host: true
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
     rollupOptions: {
       output: {
         manualChunks: {
-          'vendor': ['vue', 'vue-router', 'pinia'],
-          'audio': ['howler'],
-          'charts': ['chart.js']
+          'vendor': ['vue']
         }
       }
     },
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 1000,
+    sourcemap: false,
+    minify: 'terser'
+  },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src')
+    }
   }
 })

@@ -1,0 +1,44 @@
+<!-- public/test-audio.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>音频测试</title>
+</head>
+<body>
+    <h1>音频文件测试</h1>
+    <div id="audio-list"></div>
+    
+    <script>
+        const audioFiles = [
+            'fixed_rain.mp3',
+            'fixed_rainnight.mp3',
+            'fixed_seawind.mp3',
+            'fixed_attention.mp3',
+            'fixed_sleep_music_master_talk.mp3',
+            'fixed_alphameditation.mp3',
+            'fixed_relax_state_meditation.mp3'
+        ];
+        
+        audioFiles.forEach(file => {
+            const audio = new Audio(`/audio/${file}`);
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <p>${file}</p>
+                <button onclick="playAudio('${file}')">播放</button>
+                <button onclick="stopAudio('${file}')">停止</button>
+                <audio id="${file}" src="/audio/${file}" preload="auto"></audio>
+            `;
+            document.getElementById('audio-list').appendChild(div);
+        });
+        
+        function playAudio(file) {
+            document.getElementById(file).play();
+        }
+        
+        function stopAudio(file) {
+            document.getElementById(file).pause();
+            document.getElementById(file).currentTime = 0;
+        }
+    </script>
+</body>
+</html>

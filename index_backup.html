@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark-theme">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="media-src 'self' https://assets.mixkit.co;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="ZenFlow AI - 智能冥想与脑波监测系统">
+    <meta name="keywords" content="冥想,脑波,AI,放松,专注,睡眠">
+    <meta name="theme-color" content="#0f172a">
+    
+    <title>ZenFlow AI - 智能冥想系统</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- 字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA 元数据 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- 避免转换识别 -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="date=no">
+    <meta name="format-detection" content="address=no">
+    <meta name="format-detection" content="email=no">
+    
+    <style>
+        /* 预加载关键样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 加载动画 */
+        #app-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .loading-text {
+            color: #94a3b8;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            margin-top: 1rem;
+            letter-spacing: 0.1em;
+        }
+        
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: #334155;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            border-radius: 2px;
+            animation: loading 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes loading {
+            0% {
+                transform: translateX(-100%);
+                width: 20%;
+            }
+            50% {
+                width: 40%;
+            }
+            100% {
+                transform: translateX(200%);
+                width: 20%;
+            }
+        }
+        
+        /* 基础样式 */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 确保应用容器正确 */
+        #app {
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* 禁用文本选择 */
+        .noselect {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* 隐藏滚动条但保留功能 */
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* 性能优化 */
+        .will-change-transform {
+            will-change: transform;
+        }
+        
+        /* 禁用移动端点击高亮 */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* 禁用长按菜单 */
+        * {
+            -webkit-touch-callout: none;
+        }
+        
+        /* 响应式图片 */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* 移除默认按钮样式 */
+        button {
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        /* 移除输入框默认样式 */
+        input, textarea {
+            font-family: inherit;
+            outline: none;
+        }
+        
+        /* 链接样式 */
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        
+        /* 禁用noscript时的备用样式 */
+        noscript {
+            display: block;
+            padding: 2rem;
+            text-align: center;
+            background: #1e293b;
+            border-radius: 1rem;
+            margin: 2rem;
+            border: 1px solid #334155;
+        }
+        
+        noscript h2 {
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
+        
+        noscript p {
+            color: #94a3b8;
+        }
+        
+        /* 打印样式 */
+        @media print {
+            #app-loading,
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="noselect">
+    <!-- 应用加载动画 -->
+    <div id="app-loading">
+        <div class="loading-logo">🧘‍♂️</div>
+        <div class="loading-text">ZENFLOW AI</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div class="loading-text" style="font-size: 0.875rem; margin-top: 1rem;">
+            正在加载智能冥想系统...
+        </div>
+    </div>
+    
+    <!-- Vue应用挂载点 -->
+    <div id="app">
+        <!-- Vue将在此处渲染 -->
+        <div style="display: none;" id="static-fallback">
+            <div style="padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🧠</div>
+                <h2 style="color: #6366f1; margin-bottom: 0.5rem;">ZenFlow AI</h2>
+                <p style="color: #94a3b8;">正在加载应用程序，请稍候...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript禁用时的备用内容 -->
+    <noscript>
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; display: flex; justify-content: center; align-items: center; padding: 2rem;">
+            <div style="max-width: 500px; text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 1rem; color: #6366f1;">🧘‍♂️</div>
+                <h2 style="color: #f8fafc; margin-bottom: 1rem; font-size: 1.5rem;">请启用JavaScript</h2>
+                <p style="color: #94a3b8; margin-bottom: 1.5rem; line-height: 1.6;">
+                    ZenFlow AI 需要JavaScript才能正常运行。<br>
+                    请在浏览器设置中启用JavaScript，然后刷新页面。
+                </p>
+                <button onclick="location.reload()" style="background: #6366f1; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 1rem;">
+                    刷新页面
+                </button>
+            </div>
+        </div>
+    </noscript>
+    
+    <!-- 主应用脚本 -->
+    <script type="module" src="/src/main.js"></script>
+    
+    <!-- 加载状态管理脚本 -->
+    <script>
+        // 移除加载动画
+        function hideLoading() {
+            const loading = document.getElementById('app-loading');
+            if (loading) {
+                loading.style.opacity = '0';
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                }, 500);
+            }
+        }
+        
+        // 检测Vue是否成功挂载
+        function checkVueMount() {
+            setTimeout(() => {
+                const appElement = document.getElementById('app');
+                if (appElement && appElement.children.length > 0) {
+                    // Vue已挂载
+                    hideLoading();
+                } else {
+                    // Vue未挂载，显示备用内容
+                    const fallback = document.getElementById('static-fallback');
+                    if (fallback) {
+                        fallback.style.display = 'block';
+                    }
+                    hideLoading();
+                }
+            }, 3000);
+        }
+        
+        // 页面加载完成时检查
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkVueMount);
+        } else {
+            checkVueMount();
+        }
+        
+        // 如果Vue加载完成，也会触发隐藏
+        window.addEventListener('vue-mounted', hideLoading);
+        
+        // 错误处理
+        window.addEventListener('error', function(e) {
+            console.error('应用加载错误:', e.error);
+            hideLoading();
+            
+            // 显示错误信息
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ef4444;
+                color: white;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                z-index: 99999;
+                max-width: 400px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            `;
+            errorDiv.innerHTML = `
+                <strong>加载错误</strong>
+                <p style="margin-top: 0.5rem; font-size: 0.875rem;">请刷新页面重试</p>
+                <button onclick="this.parentElement.remove()" style="position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; color: white; cursor: pointer;">×</button>
+            `;
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                if (errorDiv.parentElement) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+        });
+        
+        // 防止右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        }, false);
+        
+        // 防止拖动
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        }, false);
+        
+        // 添加CSS变量支持检测
+        if (!window.CSS || !window.CSS.supports || !window.CSS.supports('--test', 'test')) {
+            document.body.classList.add('no-css-vars');
+        }
+        
+        // 检测黑暗模式
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        if (prefersDark.matches) {
+            document.documentElement.classList.add('dark-theme');
+        } else {
+            document.documentElement.classList.add('light-theme');
+        }
+        
+        // 监听主题变化
+        prefersDark.addEventListener('change', (e) => {
+            if (e.matches) {
+                document.documentElement.classList.remove('light-theme');
+                document.documentElement.classList.add('dark-theme');
+            } else {
+                document.documentElement.classList.remove('dark-theme');
+                document.documentElement.classList.add('light-theme');
+            }
+        });
+    </script>
+    
+    <!-- 性能监控（可选） -->
+    <script>
+        // 页面性能监控
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const perfData = window.performance.timing;
+                const loadTime = perfData.loadEventEnd - perfData.navigationStart;
+                console.log(`页面加载时间: ${loadTime}ms`);
+                
+                if (loadTime > 3000) {
+                    console.warn('页面加载较慢，建议优化');
+                }
+            }, 0);
+        });
+        
+        // 内存监控
+        if ('memory' in performance) {
+            setInterval(() => {
+                const mem = performance.memory;
+                if (mem.usedJSHeapSize > mem.jsHeapSizeLimit * 0.8) {
+                    console.warn('内存使用率过高:', Math.round((mem.usedJSHeapSize / mem.jsHeapSizeLimit) * 100) + '%');
+                }
+            }, 10000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark-theme">
+<head>
+    <meta charset="UTF-8">
+    <!-- 移动端视口配置（允许缩放） -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0, user-scalable=yes">
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+    
+    <!-- PWA配置 -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ZenFlow AI">
+    
+    <!-- SEO -->
+    <meta name="description" content="ZenFlow AI - 智能冥想与脑波监测系统">
+    <meta name="keywords" content="冥想,脑波,AI,放松,专注,睡眠">
+    
+    <title>ZenFlow AI - 智能冥想系统</title>
+    
+    <!-- 图标 -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- 字体预加载 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 关键CSS内联 -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        #app {
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* 加载动画 */
+        #app-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .loading-text {
+            color: #94a3b8;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            margin-top: 1rem;
+            letter-spacing: 0.1em;
+        }
+        
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: #334155;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            border-radius: 2px;
+            animation: loading 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        @keyframes loading {
+            0% { transform: translateX(-100%); width: 20%; }
+            50% { width: 40%; }
+            100% { transform: translateX(200%); width: 20%; }
+        }
+        
+        /* 禁用选择 */
+        .noselect {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* JavaScript禁用样式 */
+        noscript {
+            display: block;
+            padding: 2rem;
+            text-align: center;
+            background: #1e293b;
+            border-radius: 1rem;
+            margin: 2rem;
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+<body class="noselect">
+    <!-- 加载动画 -->
+    <div id="app-loading">
+        <div class="loading-logo">🧘‍♂️</div>
+        <div class="loading-text">ZENFLOW AI</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div class="loading-text" style="font-size: 0.875rem; margin-top: 1rem;">
+            正在加载智能冥想系统...
+        </div>
+    </div>
+    
+    <!-- Vue应用挂载点 -->
+    <div id="app">
+        <div style="display: none;" id="static-fallback">
+            <div style="padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🧠</div>
+                <h2 style="color: #6366f1; margin-bottom: 0.5rem;">ZenFlow AI</h2>
+                <p style="color: #94a3b8;">正在加载应用程序，请稍候...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript禁用提示 -->
+    <noscript>
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; display: flex; justify-content: center; align-items: center; padding: 2rem;">
+            <div style="max-width: 500px; text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 1rem; color: #6366f1;">🧘‍♂️</div>
+                <h2 style="color: #f8fafc; margin-bottom: 1rem; font-size: 1.5rem;">请启用JavaScript</h2>
+                <p style="color: #94a3b8; margin-bottom: 1.5rem; line-height: 1.6;">
+                    ZenFlow AI 需要JavaScript才能正常运行。<br>
+                    请在浏览器设置中启用JavaScript，然后刷新页面。
+                </p>
+                <button onclick="location.reload()" style="background: #6366f1; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 1rem;">
+                    刷新页面
+                </button>
+            </div>
+        </div>
+    </noscript>
+    
+    <!-- 主应用脚本 -->
+    <script type="module" src="/src/main.js"></script>
+    
+    <!-- 移动端优化脚本 -->
+    <script>
+        // 移动端音频上下文初始化（解决iOS/Android音频限制）
+        let audioInitialized = false;
+        
+        function initAudioOnFirstTouch() {
+            if (audioInitialized) return;
+            
+            if (window.AudioContext || window.webkitAudioContext) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                window.audioContext = new AudioContext();
+                audioInitialized = true;
+                console.log('✅ 音频上下文已初始化（移动端）');
+            }
+            
+            document.removeEventListener('touchstart', initAudioOnFirstTouch);
+            document.removeEventListener('click', initAudioOnFirstTouch);
+        }
+        
+        document.addEventListener('touchstart', initAudioOnFirstTouch);
+        document.addEventListener('click', initAudioOnFirstTouch);
+        
+        // 防止双击缩放
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // 加载状态管理
+        function hideLoading() {
+            const loading = document.getElementById('app-loading');
+            if (loading) {
+                loading.style.opacity = '0';
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                }, 500);
+            }
+        }
+        
+        function checkVueMount() {
+            setTimeout(() => {
+                const appElement = document.getElementById('app');
+                if (appElement && appElement.children.length > 1) {
+                    hideLoading();
+                } else {
+                    const fallback = document.getElementById('static-fallback');
+                    if (fallback) {
+                        fallback.style.display = 'block';
+                    }
+                    hideLoading();
+                }
+            }, 3000);
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkVueMount);
+        } else {
+            checkVueMount();
+        }
+        
+        window.addEventListener('vue-mounted', hideLoading);
+        
+        // 错误处理
+        window.addEventListener('error', function(e) {
+            console.error('应用加载错误:', e.error);
+            hideLoading();
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ef4444;
+                color: white;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                z-index: 99999;
+                max-width: 400px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            `;
+            errorDiv.innerHTML = `
+                <strong>加载错误</strong>
+                <p style="margin-top: 0.5rem; font-size: 0.875rem;">请刷新页面重试</p>
+                <button onclick="this.parentElement.remove()" style="position: absolute; top: 0.5rem; right: 0.5rem; background: none; border: none; color: white; cursor: pointer;">×</button>
+            `;
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                if (errorDiv.parentElement) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+        });
+        
+        // 防止右键菜单和拖动
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('dragstart', e => e.preventDefault());
+        
+        // 主题检测
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        if (prefersDark.matches) {
+            document.documentElement.classList.add('dark-theme');
+        } else {
+            document.documentElement.classList.add('light-theme');
+        }
+        
+        prefersDark.addEventListener('change', (e) => {
+            if (e.matches) {
+                document.documentElement.classList.remove('light-theme');
+                document.documentElement.classList.add('dark-theme');
+            } else {
+                document.documentElement.classList.remove('dark-theme');
+                document.documentElement.classList.add('light-theme');
+            }
+        });
+        
+        // PWA Service Worker注册
+        if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker 注册成功:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('❌ Service Worker 注册失败:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

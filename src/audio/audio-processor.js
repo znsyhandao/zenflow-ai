@@ -1,4 +1,4 @@
-﻿export class AudioProcessor {
+export class AudioProcessor {
   constructor() {
     this.currentAudio = null;
     this.volume = 0.7;
@@ -25,16 +25,16 @@
       const filename = audioFiles[audioId] || audioFiles.rain;
       
       // Play new audio
-      const audio = new Audio(\/audio/\\);
+      const audio = new Audio(`/audio/${filename}`);
       audio.volume = this.volume;
       
       // Add event listeners for debugging
       audio.addEventListener('canplaythrough', () => {
-        console.log(\Audio \ ready to play\);
+        console.log(`Audio ${filename} ready to play`);
       });
       
       audio.addEventListener('error', (e) => {
-        console.error(\Audio \ error:\, e.target.error);
+        console.error(`Audio ${filename} error:`, e.target.error);
       });
       
       await audio.play();
